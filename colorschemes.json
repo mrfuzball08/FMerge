@@ -1,0 +1,56 @@
+[
+    {
+        "name": "default",
+        "primary": "#F4810A",
+        "secondary": "#FFBE3B",
+        "muted": "#9E7D5A",
+        "bg_dark": "#1A0F00",
+        "subtle": "#3D3D3D",
+        "response": "#E8D5B0"
+    },
+    {
+        "name": "dracula",
+        "primary": "#FF79C6",
+        "secondary": "#50FA7B",
+        "muted": "#6272A4",
+        "bg_dark": "#282A36",
+        "subtle": "#44475A",
+        "response": "#F8F8F2"
+    },
+    {
+        "name": "nord",
+        "primary": "#88C0D0",
+        "secondary": "#A3BE8C",
+        "muted": "#4C566A",
+        "bg_dark": "#2E3440",
+        "subtle": "#3B4252",
+        "response": "#D8DEE9"
+    },
+    {
+        "name": "sunset",
+        "primary": "#FF2A7A",
+        "secondary": "#FF7A00",
+        "muted": "#8A3A8E",
+        "bg_dark": "#1E0B25",
+        "subtle": "#451B54",
+        "response": "#FAD4DF"
+    },
+    {
+        "name": "monochrome",
+        "primary": "#FFFFFF",
+        "secondary": "#B0B0B0",
+        "muted": "#707070",
+        "bg_dark": "#121212",
+        "subtle": "#333333",
+        "response": "#E0E0E0"
+    },
+    {
+        "name": "gruvbox",
+        "primary": "#FE8019",
+        "secondary": "#FABD2F",
+        "muted": "#928374",
+        "bg_dark": "#282828",
+        "subtle": "#504945",
+        "response": "#EBDBB2"
+    }
+]

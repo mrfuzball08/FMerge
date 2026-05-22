@@ -9,28 +9,21 @@ import (
 	"charm.land/lipgloss/v2"
 )
 
-// ── Color palette ────────────────────────────────────────────────────────────
-var (
-	colOrange   = lipgloss.Color("#F4810A")
-	colAmber    = lipgloss.Color("#FFBE3B")
-	colMuted    = lipgloss.Color("#9E7D5A")
-	colBgDark   = lipgloss.Color("#1A0F00")
-	colSubtle   = lipgloss.Color("#3D3D3D")
-	colResponse = lipgloss.Color("#E8D5B0")
-)
+// ── Color palette variables ──────────────────────────────────────────────────
+// Defined in palette.go
 
 // ── Pre-allocated styles (avoids per-frame allocation) ──────────────────────
 var (
-	userLabelStyle        = lipgloss.NewStyle().Foreground(colAmber).Bold(true)
-	userTextStyle         = lipgloss.NewStyle().Foreground(colAmber)
-	botLabelStyle         = lipgloss.NewStyle().Foreground(colOrange).Bold(true)
-	placeholderStyle      = lipgloss.NewStyle().Foreground(colSubtle).Italic(true)
-	promptStyle           = lipgloss.NewStyle().Foreground(colOrange).Bold(true)
-	cursorStyle           = lipgloss.NewStyle().Foreground(colAmber)
-	inputTextStyle        = lipgloss.NewStyle().Foreground(colAmber)
-	placeholderInputStyle = lipgloss.NewStyle().Foreground(colSubtle).Italic(true)
-	hintStyle             = lipgloss.NewStyle().Foreground(colSubtle)
-	divStyle              = lipgloss.NewStyle().Foreground(colOrange)
+	userLabelStyle        lipgloss.Style
+	userTextStyle         lipgloss.Style
+	botLabelStyle         lipgloss.Style
+	placeholderStyle      lipgloss.Style
+	promptStyle           lipgloss.Style
+	cursorStyle           lipgloss.Style
+	inputTextStyle        lipgloss.Style
+	placeholderInputStyle lipgloss.Style
+	hintStyle             lipgloss.Style
+	divStyle              lipgloss.Style
 )
 
 // ── ASCII header art ─────────────────────────────────────────────────────────
@@ -138,7 +131,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if strings.HasPrefix(text, "/") {
 					parts := strings.SplitN(text, " ", 2)
 					switch parts[0] {
-					case "/read":
+										case "/read":
 						if len(parts) < 2 || strings.TrimSpace(parts[1]) == "" {
 							m.messages = append(m.messages, chatMsg{
 								role:    roleAssistant,
@@ -155,6 +148,69 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 								content: fmt.Sprintf("Reading %s...", path),
 							})
 							cmds = append(cmds, readFilesCmd([]string{path}))
+						}
+					case "/theme":
+						if len(parts) < 2 || strings.TrimSpace(parts[1]) == "" {
+							m.messages = append(m.messages, chatMsg{
+								role:    roleUser,
+								content: "/theme",
+							})
+							m.messages = append(m.messages, chatMsg{
+								role:    roleAssistant,
+								content: "Usage: /theme <theme-name>\nType /theme-list to see available themes.",
+							})
+						} else {
+							themeName := strings.TrimSpace(parts[1])
+							m.messages = append(m.messages, chatMsg{
+								role:    roleUser,
+								content: "/theme " + themeName,
+							})
+							t, err := LoadThemeByName(themeName)
+							if err != nil {
+								m.messages = append(m.messages, chatMsg{
+									role:    roleAssistant,
+									content: fmt.Sprintf("Error loading theme: %v", err),
+								})
+							} else {
+								_ = SaveActiveTheme(themeName)
+								// Force invalidation of render cache
+								m.cachedMsgCount = 0
+								for i := range m.messages {
+									m.messages[i].renderedWidth = 0
+								}
+								// Force header rebuild
+								m.headerStr = m.renderHeader(m.width)
+								m.headerHeight = lipgloss.Height(m.headerStr)
+								
+								m.messages = append(m.messages, chatMsg{
+									role:    roleAssistant,
+									content: fmt.Sprintf("Theme successfully changed to '%s'!", t.Name),
+								})
+							}
+						}
+					case "/theme-list":
+						m.messages = append(m.messages, chatMsg{
+							role:    roleUser,
+							content: "/theme-list",
+						})
+						list, err := LoadThemesList()
+						if err != nil {
+							m.messages = append(m.messages, chatMsg{
+								role:    roleAssistant,
+								content: fmt.Sprintf("Error loading theme list: %v", err),
+							})
+						} else {
+							var sb strings.Builder
+							sb.WriteString("Available themes:\n\n")
+							for _, name := range list {
+								sb.WriteString(fmt.Sprintf(" • %s\n", name))
+							}
+							sb.WriteString(" • custom (configured via color_config.json)\n\n")
+							sb.WriteString("Apply with: /theme <name>")
+							m.messages = append(m.messages, chatMsg{
+								role:    roleAssistant,
+								content: sb.String(),
+							})
 						}
 					default:
 						m.messages = append(m.messages, chatMsg{
@@ -357,7 +413,7 @@ func (m model) chatAreaHeight() int {
 func (m *model) rebuildLineCache(innerW int) {
 	responseBoxStyle := lipgloss.NewStyle().
 		Border(lipgloss.RoundedBorder()).
-		BorderForeground(colOrange).
+		BorderForeground(colPrimary).
 		Padding(0, 1).
 		Width(innerW).
 		Foreground(colResponse)
@@ -496,11 +552,11 @@ func (m model) renderHeader(w int) string {
 	divider := divStyle.Render(strings.Repeat("━", w))
 
 	tagText := lipgloss.NewStyle().
-		Foreground(colOrange).
+		Foreground(colPrimary).
 		Background(colBgDark).
 		Bold(true).
 		Italic(true).
-		Render("Fast. Flexible. File Merging, Redefined.")
+		Render("True TUI for true mergers")
 
 	verText := lipgloss.NewStyle().
 		Foreground(colMuted).
@@ -513,7 +569,7 @@ func (m model) renderHeader(w int) string {
 	if w < minArtWidth {
 		// ── Compact header for narrow terminals ──────────────────────────
 		brand := lipgloss.NewStyle().
-			Foreground(colAmber).
+			Foreground(colSecondary).
 			Background(colBgDark).
 			Bold(true).
 			Render("⬡ FMERGE")
@@ -532,7 +588,7 @@ func (m model) renderHeader(w int) string {
 	// ── Full art header ──────────────────────────────────────────────────
 	fmergeArt := strings.Join(fmergeArtLines, "\n")
 	artStyled := lipgloss.NewStyle().
-		Foreground(colAmber).
+		Foreground(colSecondary).
 		Background(colBgDark).
 		Bold(true).
 		Render(fmergeArt)
@@ -565,6 +621,9 @@ func (m model) renderHeader(w int) string {
 
 // ── Entry point ──────────────────────────────────────────────────────────────
 func main() {
+	if err := LoadColorPalette(); err != nil {
+		fmt.Fprintln(os.Stderr, "warning: could not load color palette:", err)
+	}
 	p := tea.NewProgram(model{historyIndex: -1})
 	if _, err := p.Run(); err != nil {
 		fmt.Fprintln(os.Stderr, "error:", err)

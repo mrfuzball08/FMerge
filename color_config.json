@@ -1,0 +1,12 @@
+{
+  "theme": "dracula",
+  "custom": {
+    "name": "custom",
+    "primary": "#F4810A",
+    "secondary": "#FFBE3B",
+    "muted": "#9E7D5A",
+    "bg_dark": "#1A0F00",
+    "subtle": "#3D3D3D",
+    "response": "#E8D5B0"
+  }
+}
