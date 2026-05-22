@@ -29,7 +29,7 @@ FMerge delivers a premium terminal experience with a focus on speed and clarity.
 | --- | --- |
 | `Enter` | Send message |
 | `Up` / `Down` | Navigate message history (shell-style) |
-| `Shift+Up` / `Shift+Down` | Scroll message area (3 lines) **(Currently broken)** |
+| `Ctrl+Up` / `Ctrl+Down` | Scroll message area (3 lines) **(Currently broken)** |
 | `PgUp` / `PgDn` | Scroll half-viewport |
 | `Home` / `End` | Jump to start / end of history |
 | `Ctrl+V` | Paste from clipboard (bracketed paste — no extra tools needed) |
