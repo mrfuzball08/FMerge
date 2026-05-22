@@ -1,6 +1,6 @@
 # ⬡ FMERGE
 
-**FMerge** is a modern, chat-based Terminal User Interface (TUI) designed for file merging tasks. It features a responsive design, rich aesthetics, and a "chat-first" workflow.
+**FMerge** is a modern, chat-based Terminal User Interface (TUI) designed for file merging tasks (not yet implemented, lol). It features a responsive design, rich aesthetics, and a "chat-first" interface with a command-driven workflow.
 
 ## Overview
 
@@ -12,7 +12,8 @@ FMerge delivers a premium terminal experience with a focus on speed and clarity.
 - **Responsive Header**:
     - High-fidelity ASCII art on wide terminals.
     - Minimalist "⬡ FMERGE" adaptive layout for narrow screens (< 58 chars).
-- **Premium Aesthetics**: Uses a curated workspace palette (`#F4810A` Orange, `#FFBE3B` Amber) with a deep, focused background (`#1A0F00`).
+- **Premium Aesthetics**: Features a dynamic, JSON-driven color palette system. Comes with beautifully curated default themes (Classic Amber, Dracula, Nord, Sunset, Monochrome, and Gruvbox) which guarantee high-contrast legibility across all UI elements.
+- **Dynamic Theme Engine**: Instantly switch themes on the fly using `/theme <name>` without restarting the application. The entire UI and message history repaints instantly.
 - **Smooth Performance**:
     - **Per-Message Cache**: Individual message blocks are cached using Lip Gloss. Adding new messages is O(1) instead of re-rendering the entire history, eliminating lag on large files.
     - **Header Cache**: The complex ASCII header is cached on window resize to prevent 2× per-frame rendering overhead.
@@ -21,7 +22,11 @@ FMerge delivers a premium terminal experience with a focus on speed and clarity.
     - Supports full mouse wheel scrolling.
     - Alt-screen mode for a clean, flicker-free experience.
     - Pinned input bar with real-time feedback.
-- **File Loading**: Load markdown files on-the-fly with `/read <path>` slash commands.
+    - Flawless adaptive layouts without background rendering artifacts on narrow terminals.
+- **Slash Commands**: 
+    - `/read <path>`: Load markdown files on-the-fly.
+    - `/theme <name>`: Instantly switch the active color palette.
+    - `/theme-list`: Show all available themes.
 
 ## Key Bindings
 
@@ -47,9 +52,12 @@ FMerge delivers a premium terminal experience with a focus on speed and clarity.
 
 ```
 FMerge/
-├── main.go          # TUI entry point, Bubble Tea model, slash commands, rendering
-├── files.go         # Async file reading command, path resolution, validation
-├── md-merge.go      # Low-level markdown line reader
+├── main.go               # TUI entry point, Bubble Tea model, slash commands, rendering
+├── files.go              # Async file reading command, path resolution, validation
+├── md-merge.go           # Low-level markdown line reader
+├── palette.go            # Dynamic color theme loader and Lip Gloss style manager
+├── colorschemes.json     # (Generated) Available themes
+├── color_config.json     # (Generated) Active theme selection and custom colors
 ├── local_docs/
 │   └── CURRENT_STATE.md
 ├── README.md
