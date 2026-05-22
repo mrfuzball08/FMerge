@@ -568,11 +568,22 @@ func (m model) renderHeader(w int) string {
 
 	if w < minArtWidth {
 		// ── Compact header for narrow terminals ──────────────────────────
+		// We set an explicit identical width and alignment on both elements
+		// to prevent JoinVertical from generating unstyled padding space tiles.
 		brand := lipgloss.NewStyle().
 			Foreground(colSecondary).
 			Background(colBgDark).
 			Bold(true).
+			Width(12).
+			Align(lipgloss.Center).
 			Render("⬡ FMERGE")
+
+		verTextPadded := lipgloss.NewStyle().
+			Foreground(colMuted).
+			Background(colBgDark).
+			Width(12).
+			Align(lipgloss.Center).
+			Render("v0.1.0")
 
 		headerBlock := lipgloss.NewStyle().
 			Background(colBgDark).
@@ -580,7 +591,7 @@ func (m model) renderHeader(w int) string {
 			Align(lipgloss.Center).
 			PaddingTop(1).
 			PaddingBottom(1).
-			Render(lipgloss.JoinVertical(lipgloss.Center, brand, verText))
+			Render(lipgloss.JoinVertical(lipgloss.Center, brand, verTextPadded))
 
 		return headerBlock + "\n" + divider
 	}
