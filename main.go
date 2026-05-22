@@ -202,10 +202,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.input = m.inputDraft
 			}
 
-		case "shift+up":
+		case "ctrl+up":
 			m.scrollOffset += 3
 
-		case "shift+down":
+		case "ctrl+down":
 			m.scrollOffset -= 3
 
 		case "pageup":
@@ -323,6 +323,9 @@ func (m model) View() tea.View {
 	v.AltScreen = true
 	// Enable mouse cell motion so scroll wheel actions report cleanly
 	v.MouseMode = tea.MouseModeCellMotion
+	// Request keyboard enhancements so the terminal distinguishes
+	// modifier+special-key combos (e.g. shift+up vs plain up).
+	v.KeyboardEnhancements = tea.KeyboardEnhancements{}
 	return v
 }
 
@@ -418,12 +421,12 @@ func (m model) renderChat() string {
 	cursor := cursorStyle.Render("█")
 	var inputContent string
 	if m.input == "" {
-		inputContent = placeholderInputStyle.Render("Type your message...") + cursor
+		inputContent = cursor + placeholderInputStyle.Render("Type your message...")
 	} else {
 		inputContent = inputTextStyle.Render(m.input) + cursor
 	}
 	prompt := promptStyle.Render(" ▸ ")
-	hintText := hintStyle.Render("  Enter · ↑↓ history · Shift+↑↓ scroll · Ctrl+V paste · Ctrl+C quit")
+	hintText := hintStyle.Render("  Enter · ↑↓ history · Ctrl+↑↓ scroll · Ctrl+V paste · Ctrl+C quit")
 	inputBar := divLine + "\n" + prompt + inputContent + "\n" + hintText
 	const inputH = 3
 
