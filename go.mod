@@ -3,8 +3,11 @@ module merger
 go 1.25.8
 
 require (
-	charm.land/bubbletea/v2 v2.0.5 // indirect
-	charm.land/lipgloss/v2 v2.0.3 // indirect
+	charm.land/bubbletea/v2 v2.0.5
+	charm.land/lipgloss/v2 v2.0.3
+)
+
+require (
 	github.com/charmbracelet/colorprofile v0.4.3 // indirect
 	github.com/charmbracelet/ultraviolet v0.0.0-20260413211237-bd52878bcec2 // indirect
 	github.com/charmbracelet/x/ansi v0.11.7 // indirect
